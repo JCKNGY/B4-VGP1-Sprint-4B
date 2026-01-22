@@ -101,10 +101,23 @@ namespace Popper
             {
                 int x = kernels[i].X + (int)velocities[i].X;
                 int y = kernels[i].Y + (int)velocities[i].Y;
+
                 kernels[i] = new Rectangle(x, y, kernels[i].Width, kernels[i].Height);
                 if (kernels[i].Y + kernels[i].Height >= window.Bottom)
                 {
                     velocities[i] = new Vector2(velocities[i].X, velocities[i].Y * -1);
+                }
+                if (kernels[i].X + kernels[i].Width >= window.Right)
+                {
+                    velocities[i] = new Vector2(velocities[i].X, velocities[i].X * -1);
+                }
+                if (kernels[i].Y - kernels[i].Height >= window.Top)
+                {
+                    velocities[i] = new Vector2(velocities[i].X, velocities[i].Y * -1);
+                }
+                if (kernels[i].X + kernels[i].Width >= window.Left)
+                {
+                    velocities[i] = new Vector2(velocities[i].X, velocities[i].X * -1);
                 }
             }
             
