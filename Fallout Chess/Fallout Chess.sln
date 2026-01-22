@@ -1,0 +1,29 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.35130.168
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fallout_Chess", "Fallout Chess\Fallout_Chess\Fallout_Chess.csproj", "{211F113A-30CE-421A-9A5F-B61FF028D12D}"
+EndProject
+Project("{96E2B04D-8817-42C6-938A-82C39BA4D311}") = "Fallout_ChessContent", "Fallout Chess\Fallout_ChessContent\Fallout_ChessContent.contentproj", "{1CCBCB70-91E9-4D3C-A743-FD2816A55D5A}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x86 = Debug|x86
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{211F113A-30CE-421A-9A5F-B61FF028D12D}.Debug|x86.ActiveCfg = Debug|x86
+		{211F113A-30CE-421A-9A5F-B61FF028D12D}.Debug|x86.Build.0 = Debug|x86
+		{211F113A-30CE-421A-9A5F-B61FF028D12D}.Release|x86.ActiveCfg = Release|x86
+		{211F113A-30CE-421A-9A5F-B61FF028D12D}.Release|x86.Build.0 = Release|x86
+		{1CCBCB70-91E9-4D3C-A743-FD2816A55D5A}.Debug|x86.ActiveCfg = Debug|x86
+		{1CCBCB70-91E9-4D3C-A743-FD2816A55D5A}.Release|x86.ActiveCfg = Release|x86
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {4A036F2D-DB76-4A8A-B8CD-A45634723F6A}
+	EndGlobalSection
+EndGlobal
