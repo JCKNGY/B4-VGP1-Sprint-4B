@@ -18,10 +18,13 @@ namespace DeathBlossom
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
-        Texture2D spaceTex;
+        Texture2D spaceTex,missleTex;
         Rectangle screenRect;
         Gunstar ship;
         KeyboardState oldKB;
+
+        List<torpedoes> torpedoesList = new List<torpedoes>();
+
 
 
         public Game1()
@@ -64,6 +67,7 @@ namespace DeathBlossom
             // Starter code
             spaceTex = Content.Load<Texture2D>("space");
             Texture2D gunstarTex = Content.Load<Texture2D>("gunstar");
+            Texture2D missleTex = Content.Load<Texture2D>("missle2");
             Rectangle gunstarRect = new Rectangle(500, 300, 70, 50);
             ship = new Gunstar(gunstarTex, gunstarRect);
 
@@ -98,7 +102,17 @@ namespace DeathBlossom
             if (kb.IsKeyDown(Keys.Space) && !oldKB.IsKeyDown(Keys.Space))
                 ship.fire();
 
+            if (ship.isFiring)
+            {
+                torpedoesList.Add(new torpedoes());
+                if (outOfScreen(torpedoesList[0].rect))
+                {
+                    torpedoesList.RemoveAt(0);
+                }
+            }
+            
 
+            
 
 
 
@@ -120,12 +134,29 @@ namespace DeathBlossom
             spriteBatch.Draw(spaceTex, screenRect, Color.White);
             ship.Draw(spriteBatch, gameTime);
 
+            for(int i = 0; i < torpedoesList.Count; i++)
+            {
+                spriteBatch.Draw(missleTex, torpedoesList[i].rect, Color.White);
+            }
+
             // TODO: Add your drawing code here
 
 
 
             spriteBatch.End();
             base.Draw(gameTime);
+        }
+
+        public Boolean outOfScreen(Rectangle rect)
+        {
+            if(rect.X > 1600 || rect.X < 0 || rect.Y > 950 || rect.Y < 0)
+            {
+                return true;
+            }
+            else
+            {
+                return false; 
+            }
         }
     }
 }

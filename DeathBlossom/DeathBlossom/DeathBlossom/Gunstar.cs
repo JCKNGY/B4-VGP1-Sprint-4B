@@ -16,7 +16,7 @@ namespace DeathBlossom
         Texture2D gunstarTex;
         Rectangle gunstarRect;
         Vector2 gunstarCenter;
-        Boolean isFiring;
+        public Boolean isFiring;
         double heading;
         int fireCounter;
         Random rand;
