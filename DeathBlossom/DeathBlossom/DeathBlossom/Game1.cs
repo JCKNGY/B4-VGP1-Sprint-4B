@@ -23,9 +23,13 @@ namespace DeathBlossom
         Gunstar ship;
         KeyboardState oldKB;
 
+        double fireTimer;
+        double fireDuration;
+
+
         List<torpedoes> torpedoesList = new List<torpedoes>();
 
-
+        Color red; 
 
         public Game1()
         {
@@ -51,6 +55,9 @@ namespace DeathBlossom
             int screenWidth = graphics.GraphicsDevice.Viewport.Width;
             int screenHeight = graphics.GraphicsDevice.Viewport.Height;
             screenRect = new Rectangle(0, 0, screenWidth, screenHeight);
+            fireTimer = 0;
+            fireDuration = 10.0;
+
             oldKB = Keyboard.GetState();
             
             base.Initialize();
@@ -67,7 +74,8 @@ namespace DeathBlossom
             // Starter code
             spaceTex = Content.Load<Texture2D>("space");
             Texture2D gunstarTex = Content.Load<Texture2D>("gunstar");
-            Texture2D missleTex = Content.Load<Texture2D>("missle2");
+            missleTex = Content.Load<Texture2D>("missile2");
+
             Rectangle gunstarRect = new Rectangle(500, 300, 70, 50);
             ship = new Gunstar(gunstarTex, gunstarRect);
 
@@ -102,19 +110,26 @@ namespace DeathBlossom
             if (kb.IsKeyDown(Keys.Space) && !oldKB.IsKeyDown(Keys.Space))
                 ship.fire();
 
-            if (ship.isFiring)
+            ship.Update(gameTime);
+
+            if (ship.IsFiring)
             {
-                torpedoesList.Add(new torpedoes());
-                if (outOfScreen(torpedoesList[0].rect))
+
+                Vector2 startPos = ship.Location;
+
+                torpedoesList.Add(new torpedoes(startPos, ship.Heading));
+            }
+
+
+            for (int i = torpedoesList.Count - 1; i >= 0; i--)
+            {
+                torpedoesList[i].Update();
+
+                if (outOfScreen(torpedoesList[i].rect))
                 {
-                    torpedoesList.RemoveAt(0);
+                    torpedoesList.RemoveAt(i);
                 }
             }
-            
-
-            
-
-
 
 
             oldKB = kb;
@@ -149,14 +164,12 @@ namespace DeathBlossom
 
         public Boolean outOfScreen(Rectangle rect)
         {
-            if(rect.X > 1600 || rect.X < 0 || rect.Y > 950 || rect.Y < 0)
+            if (rect.Right < 0 || rect.Left > screenRect.Width || rect.Bottom < 0 || rect.Top > screenRect.Height)
             {
                 return true;
             }
-            else
-            {
-                return false; 
-            }
+            return false;
         }
+
     }
 }
