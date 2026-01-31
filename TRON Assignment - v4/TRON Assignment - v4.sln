@@ -1,0 +1,29 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.36631.11
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TRON_Assignment___v4", "TRON Assignment - v4\TRON_Assignment___v4\TRON_Assignment___v4.csproj", "{6E41AC07-888B-47AB-B030-4DDC07B8DB9A}"
+EndProject
+Project("{96E2B04D-8817-42C6-938A-82C39BA4D311}") = "TRON_Assignment___v4Content", "TRON Assignment - v4\TRON_Assignment___v4Content\TRON_Assignment___v4Content.contentproj", "{104B70E3-07CF-4ECA-AC39-F9F753AB45CE}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x86 = Debug|x86
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{6E41AC07-888B-47AB-B030-4DDC07B8DB9A}.Debug|x86.ActiveCfg = Debug|x86
+		{6E41AC07-888B-47AB-B030-4DDC07B8DB9A}.Debug|x86.Build.0 = Debug|x86
+		{6E41AC07-888B-47AB-B030-4DDC07B8DB9A}.Release|x86.ActiveCfg = Release|x86
+		{6E41AC07-888B-47AB-B030-4DDC07B8DB9A}.Release|x86.Build.0 = Release|x86
+		{104B70E3-07CF-4ECA-AC39-F9F753AB45CE}.Debug|x86.ActiveCfg = Debug|x86
+		{104B70E3-07CF-4ECA-AC39-F9F753AB45CE}.Release|x86.ActiveCfg = Release|x86
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {98DBFDB1-536C-401E-8C0C-35B7E3901997}
+	EndGlobalSection
+EndGlobal

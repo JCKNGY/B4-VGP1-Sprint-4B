@@ -9,7 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Bread_Crumbs
+namespace TRON_Assignment___v4
 {
     /// <summary>
     /// This is the main type for your game
@@ -19,16 +19,43 @@ namespace Bread_Crumbs
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
 
-        Texture2D moverTex;
-        Texture2D crumbTex;
+        enum GameState
+        {
 
-        Rectangle windowRect;
-        Rectangle moverRect;
+            StartScreen,
+            Countdown,
+            Playing,
+            GameOver
+        }
 
-        Vector2 moverVelocity;
 
-        Rectangle[] crumbRects;
-        int crumbCount;
+        enum Direction
+        {
+            Up, 
+            Down, 
+            Left, 
+            Right
+        }
+
+        GameState currentState;
+        SpriteFont font;
+        Vector2 bike1Pos;
+
+        Vector2 bike2Pos;
+
+        Direction bike1Dir;
+        Direction bike2Dir;
+
+        const float BIKE_SPEED = 3f;
+
+
+        float countDownTimer;
+
+        int countDownValue;
+
+
+        Random rng;
+
 
 
         public Game1()
@@ -46,23 +73,8 @@ namespace Bread_Crumbs
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
-            int screenWidth = graphics.PreferredBackBufferWidth;
-            int screenHeight = graphics.PreferredBackBufferHeight;
-            windowRect = new Rectangle(0, 0, screenWidth, screenHeight);
-
-            moverRect = new Rectangle(200, 200, 64, 64);
-            moverVelocity = new Vector2(5, 4);
-
-            crumbCount = 10;
-            crumbRects = new Rectangle[crumbCount];
-
-            for (int i = 0; i < crumbCount; i++)
-            {
-                crumbRects[i] = moverRect;
-            }
-
-
-
+            currentState = GameState.StartScreen;
+                
             base.Initialize();
         }
 
@@ -74,8 +86,7 @@ namespace Bread_Crumbs
         {
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
-            moverTex = Content.Load<Texture2D>("square-64");
-            crumbTex = Content.Load<Texture2D>("square-32");
+            font = this.Content.Load<SpriteFont>("SpriteFont1");
             // TODO: use this.Content to load your game content here
         }
 
@@ -99,37 +110,19 @@ namespace Bread_Crumbs
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
                 this.Exit();
 
+            if(currentState == GameState.StartScreen)
+            {
+                if (Keyboard.GetState().IsKeyDown(Keys.Enter))
+                {
+                    currentState = GameState.Countdown; 
+
+
+                }
+            }
+
+
             // TODO: Add your update logic here
-            int nextX = moverRect.X + (int)moverVelocity.X;
-            int nextY = moverRect.Y + (int)moverVelocity.Y;
-            moverRect = new Rectangle(nextX, nextY, moverRect.Width, moverRect.Height);
 
-            if (moverRect.Left <= windowRect.Left)
-            {
-                moverRect.X = windowRect.Left;
-                moverVelocity.X *= -1;
-            }
-            if (moverRect.Right >= windowRect.Right)
-            {
-                moverRect.X = windowRect.Right - moverRect.Width;
-                moverVelocity.X *= -1;
-            }
-            if (moverRect.Top <= windowRect.Top)
-            {
-                moverRect.Y = windowRect.Top;
-                moverVelocity.Y *= -1;
-            }
-            if (moverRect.Bottom >= windowRect.Bottom)
-            {
-                moverRect.Y = windowRect.Bottom - moverRect.Height;
-                moverVelocity.Y *= -1;
-            }
-
-            for (int i = crumbCount - 1; i > 0; i--)
-            {
-                crumbRects[i] = crumbRects[i - 1];
-            }
-            crumbRects[0] = moverRect;
             base.Update(gameTime);
         }
 
@@ -140,24 +133,18 @@ namespace Bread_Crumbs
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
+
+            // TODO: Add your drawing code here
             spriteBatch.Begin();
 
-            for (int i = crumbCount - 1; i >= 0; i--)
+            if (currentState == GameState.StartScreen)
             {
-                int sizeShrink = (crumbCount - 1 - i) * 4;
-                int w = Math.Max(4, crumbRects[i].Width - sizeShrink);
-                int h = Math.Max(4, crumbRects[i].Height - sizeShrink);
+                GraphicsDevice.Clear(Color.White);
 
-                Rectangle drawRect = new Rectangle(crumbRects[i].X + (crumbRects[i].Width - w) / 2,crumbRects[i].Y + (crumbRects[i].Height - h) / 2,w,h);
-
-                spriteBatch.Draw(crumbTex, drawRect, Color.White);
+                spriteBatch.DrawString(font, "Click Enter To Start", new Vector2(50, 50), Color.Black);
             }
 
-            spriteBatch.Draw(moverTex, moverRect, Color.White);
-
             spriteBatch.End();
-            // TODO: Add your drawing code here
-
             base.Draw(gameTime);
         }
     }

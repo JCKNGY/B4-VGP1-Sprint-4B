@@ -26,7 +26,11 @@ namespace Popper
         List<Rectangle> kernels;
         List<Vector2> velocities;
         List<Texture2D> images;
-        
+
+
+        List<int> popTimers;
+        Random rng;
+
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
@@ -46,17 +50,23 @@ namespace Popper
             int screenHeight = graphics.GraphicsDevice.Viewport.Height;
             window = new Rectangle(0, 0, screenWidth, screenHeight);
 
+            popTimers = new List<int>();
+            rng = new Random();
+
             kernels = new List<Rectangle>();
             velocities = new List<Vector2>();
             images = new List<Texture2D>();
 
             kernels.Add(new Rectangle(70, 50, 15, 15));
             velocities.Add(new Vector2(2, 3));
+            popTimers.Add(0);
 
             kernels.Add(new Rectangle(70, 110, 15, 15));
             velocities.Add(new Vector2(2, 3));
+            popTimers.Add(0);
 
             
+
             base.Initialize();
         }
 
@@ -75,6 +85,8 @@ namespace Popper
 
             images.Add(unpoppedTex);
             images.Add(unpoppedTex);
+
+            
         }
 
         /// <summary>
@@ -97,30 +109,93 @@ namespace Popper
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
                 this.Exit();
 
-            for (int i=0; i < kernels.Count; i++)
+            for (int i = 0; i < kernels.Count; i++)
             {
                 int x = kernels[i].X + (int)velocities[i].X;
                 int y = kernels[i].Y + (int)velocities[i].Y;
-
                 kernels[i] = new Rectangle(x, y, kernels[i].Width, kernels[i].Height);
                 if (kernels[i].Y + kernels[i].Height >= window.Bottom)
                 {
+                    kernels[i] = new Rectangle(kernels[i].X, window.Bottom - kernels[i].Height, kernels[i].Width, kernels[i].Height);
                     velocities[i] = new Vector2(velocities[i].X, velocities[i].Y * -1);
                 }
-                if (kernels[i].X + kernels[i].Width >= window.Right)
+                if (kernels[i].Top <= window.Top)
                 {
-                    velocities[i] = new Vector2(velocities[i].X, velocities[i].X * -1);
-                }
-                if (kernels[i].Y - kernels[i].Height >= window.Top)
-                {
+                    kernels[i] = new Rectangle(kernels[i].X, window.Top, kernels[i].Width, kernels[i].Height);
                     velocities[i] = new Vector2(velocities[i].X, velocities[i].Y * -1);
                 }
-                if (kernels[i].X + kernels[i].Width >= window.Left)
+
+                if (kernels[i].Right >= window.Right)
                 {
-                    velocities[i] = new Vector2(velocities[i].X, velocities[i].X * -1);
+                    kernels[i] = new Rectangle(window.Right - kernels[i].Width, kernels[i].Y, kernels[i].Width, kernels[i].Height);
+                    velocities[i] = new Vector2(velocities[i].X * -1, velocities[i].Y);
+                }
+
+                if (kernels[i].Left <= window.Left)
+                {
+                    kernels[i] = new Rectangle(window.Left, kernels[i].Y, kernels[i].Width, kernels[i].Height);
+                    velocities[i] = new Vector2(velocities[i].X * -1, velocities[i].Y);
+                }
+
+
+
+            }
+            for (int a = 0; a < kernels.Count; a++)
+            {
+                for (int b = a + 1; b < kernels.Count; b++)
+                {
+                    if (kernels[a].Intersects(kernels[b]))
+                    {
+                        if (popTimers[a] == 0 && popTimers[b] == 0)
+                        {
+                            popTimers[a] = 45;
+                            popTimers[b] = 45;
+                            images[a] = poppedTex;
+                            images[b] = poppedTex;
+                        }
+                    }
                 }
             }
-            
+
+            for (int i = kernels.Count - 1; i >= 0; i--)
+            {
+                if (popTimers[i] == 1)
+                {
+                    kernels.RemoveAt(i);
+                    velocities.RemoveAt(i);
+                    images.RemoveAt(i);
+                    popTimers.RemoveAt(i);
+                }
+                else if (popTimers[i] > 1)
+                {
+                    popTimers[i] = popTimers[i] - 1;
+                }
+            }
+
+            double dt = gameTime.ElapsedGameTime.TotalSeconds;
+            double spawnChance = dt / 2;
+
+            if (rng.NextDouble() < spawnChance)
+            {
+                int kernelWidth = 15;
+                int kernelHeight = 15;
+
+                int spawnX = rng.Next(window.Left, window.Right - kernelWidth);
+                int spawnY = rng.Next(window.Top, window.Bottom - kernelHeight);
+
+                int vx = rng.Next(-3, 4);
+                int vy = rng.Next(-3, 4);
+
+                if (vx == 0 && vy == 0)
+                {
+                    vx = 1;
+                }
+
+                kernels.Add(new Rectangle(spawnX, spawnY, kernelWidth, kernelHeight));
+                velocities.Add(new Vector2(vx, vy));
+                images.Add(unpoppedTex);
+                popTimers.Add(0);
+            }
             base.Update(gameTime);
         }
 
