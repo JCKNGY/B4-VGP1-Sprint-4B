@@ -27,8 +27,6 @@ namespace TRON_Assignment___v4
             Playing,
             GameOver
         }
-
-
         enum Direction
         {
             Up, 
@@ -36,25 +34,23 @@ namespace TRON_Assignment___v4
             Left, 
             Right
         }
-
         GameState currentState;
         SpriteFont font;
         Vector2 bike1Pos;
-
         Vector2 bike2Pos;
-
         Direction bike1Dir;
         Direction bike2Dir;
-
         const float BIKE_SPEED = 3f;
-
-
         float countDownTimer;
-
         int countDownValue;
-
-
         Random rng;
+
+        List<Rectangle> bike1Trail;
+        List<Rectangle> bike2Trail;
+
+        const int TRAIL_SIZE = 5;
+
+        Texture2D pixelTexture;
 
 
 
@@ -74,7 +70,33 @@ namespace TRON_Assignment___v4
         {
             // TODO: Add your initialization logic here
             currentState = GameState.StartScreen;
-                
+            rng = new Random();
+            countDownTimer = 0f;
+            countDownValue = 3;
+
+            int side = rng.Next(2);
+
+            if (side == 0)
+            {
+                bike1Pos = new Vector2(rng.Next(GraphicsDevice.Viewport.Width), 0);
+                bike2Pos = new Vector2(rng.Next(GraphicsDevice.Viewport.Width), GraphicsDevice.Viewport.Height);
+
+                bike1Dir = Direction.Down;
+                bike2Dir = Direction.Up;
+            }
+            else
+            {
+                bike1Pos = new Vector2(0, rng.Next(GraphicsDevice.Viewport.Height));
+                bike2Pos = new Vector2(GraphicsDevice.Viewport.Width, rng.Next(GraphicsDevice.Viewport.Height));
+
+                bike1Dir = Direction.Right;
+                bike2Dir = Direction.Left;
+            }
+
+            bike1Trail = new List<Rectangle>();
+            bike2Trail = new List<Rectangle>();
+
+
             base.Initialize();
         }
 
@@ -88,6 +110,16 @@ namespace TRON_Assignment___v4
             spriteBatch = new SpriteBatch(GraphicsDevice);
             font = this.Content.Load<SpriteFont>("SpriteFont1");
             // TODO: use this.Content to load your game content here
+
+
+
+            pixelTexture = new Texture2D(GraphicsDevice, 1, 1);
+            pixelTexture.SetData(new[] { Color.White });
+
+
+
+
+
         }
 
         /// <summary>
@@ -114,11 +146,146 @@ namespace TRON_Assignment___v4
             {
                 if (Keyboard.GetState().IsKeyDown(Keys.Enter))
                 {
-                    currentState = GameState.Countdown; 
+                    currentState = GameState.Countdown;
 
-
+                    countDownValue = 3;
+                    countDownTimer = 0f;
                 }
             }
+
+
+            if (currentState == GameState.Countdown)
+            {
+                countDownTimer += (float)gameTime.ElapsedGameTime.TotalSeconds;
+
+                if (countDownTimer >= 1f)
+                {
+                    countDownValue--;
+                    countDownTimer = 0f;
+
+                    if (countDownValue <= 0)
+                    {
+                        currentState = GameState.Playing;
+                    }
+                }
+            }
+
+
+            if (currentState == GameState.Playing)
+            {
+                if (bike1Dir == Direction.Up)
+                {
+                    bike1Pos.Y -= BIKE_SPEED;
+                }
+
+                if (bike1Dir == Direction.Down)
+                {
+                    bike1Pos.Y += BIKE_SPEED;
+                }
+                if (bike1Dir == Direction.Left)
+                {
+                    bike1Pos.X -= BIKE_SPEED;
+                }
+                if (bike1Dir == Direction.Right)
+                {
+                    bike1Pos.X += BIKE_SPEED;
+                }
+
+
+                if (bike2Dir == Direction.Up)
+                {
+                    bike2Pos.Y -= BIKE_SPEED;
+                }
+
+                if (bike2Dir == Direction.Down)
+                {
+                    bike2Pos.Y += BIKE_SPEED;
+                }
+                if (bike2Dir == Direction.Left)
+                {
+                    bike2Pos.X -= BIKE_SPEED;
+                }
+                if (bike2Dir == Direction.Right)
+                {
+                    bike2Pos.X += BIKE_SPEED;
+                }
+            }
+
+
+            KeyboardState ks = Keyboard.GetState();
+
+            if (bike1Dir == Direction.Up || bike1Dir == Direction.Down)
+            {
+                if (ks.IsKeyDown(Keys.A))
+                {
+                    bike1Dir = Direction.Left;
+                }
+                if (ks.IsKeyDown(Keys.D))
+                {
+                    bike1Dir = Direction.Right;
+                }
+                }
+            else
+            {
+                if (ks.IsKeyDown(Keys.W)) {
+                    bike1Dir = Direction.Up;
+                }
+                if (ks.IsKeyDown(Keys.S))
+                {
+                    bike1Dir = Direction.Down;
+                }
+
+
+            }
+
+            if (bike2Dir == Direction.Up || bike2Dir == Direction.Down)
+            {
+                if (ks.IsKeyDown(Keys.Left))
+                {
+                    bike2Dir = Direction.Left;
+                }
+                if (ks.IsKeyDown(Keys.Right))
+                {
+                    bike2Dir = Direction.Right;
+                }
+                }
+            else
+            {
+                if (ks.IsKeyDown(Keys.Up))
+                {
+                    bike2Dir = Direction.Up;
+                }
+                if (ks.IsKeyDown(Keys.Down))
+                {
+                    bike2Dir = Direction.Down;
+                }
+            }
+
+
+            if (bike1Pos.X < 0 || bike1Pos.X > GraphicsDevice.Viewport.Width ||
+            bike1Pos.Y < 0 || bike1Pos.Y > GraphicsDevice.Viewport.Height)
+            {
+                currentState = GameState.GameOver;
+            }
+
+            if (bike2Pos.X < 0 || bike2Pos.X > GraphicsDevice.Viewport.Width ||
+                bike2Pos.Y < 0 || bike2Pos.Y > GraphicsDevice.Viewport.Height)
+            {
+                currentState = GameState.GameOver;
+            }
+
+
+
+            if (Vector2.Distance(bike1Pos, bike2Pos) < 10f)
+            {
+                currentState = GameState.GameOver;
+            }
+
+
+            bike1Trail.Add(new Rectangle((int)bike1Pos.X, (int)bike1Pos.Y, TRAIL_SIZE, TRAIL_SIZE));
+            bike2Trail.Add(new Rectangle((int)bike2Pos.X, (int)bike2Pos.Y, TRAIL_SIZE, TRAIL_SIZE));
+
+
 
 
             // TODO: Add your update logic here
@@ -143,6 +310,19 @@ namespace TRON_Assignment___v4
 
                 spriteBatch.DrawString(font, "Click Enter To Start", new Vector2(50, 50), Color.Black);
             }
+
+            foreach (Rectangle rect in bike1Trail)
+            {
+                spriteBatch.Draw(pixelTexture, rect, Color.White);
+            }
+
+            foreach (Rectangle rect in bike2Trail)
+            {
+                spriteBatch.Draw(pixelTexture, rect, Color.White);
+            }
+
+
+
 
             spriteBatch.End();
             base.Draw(gameTime);
