@@ -39,7 +39,7 @@ namespace TRON_Assignment___v4
         Vector2 bike2Pos;
         Direction bike1Dir;
         Direction bike2Dir;
-        const float BIKE_SPEED = 3f;
+        float BIKE_SPEED = 3f;
         float countDownTimer;
         int countDownValue;
         Random rng;
@@ -47,11 +47,11 @@ namespace TRON_Assignment___v4
         List<Rectangle> bike1Trail;
         List<Rectangle> bike2Trail;
 
-        const int TRAIL_SIZE = 5;
+        int TRAIL_SIZE = 5;
 
-        const int BIKE_WIDTH = 18;
-        const int BIKE_HEIGHT = 8;
-        const float BIKE_COLLISION_DISTANCE = 10f;
+        int BIKE_WIDTH = 18;
+        int BIKE_HEIGHT = 8;
+        float BIKE_COLLISION_DISTANCE = 10f;
 
 
         Texture2D pixelTexture;
